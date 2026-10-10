@@ -1,7 +1,5 @@
 # Infrastructure & Automation Project
 
----
-
 ## 1. Настройка удаленной ВМ (Ansible)
 
 ```bash
@@ -11,6 +9,12 @@ cd ansible
 ansible -i inventory.ini all -m ping
 ansible-playbook -i inventory.ini setup_host.yml
 ```
+
+
+Скриншот вывода Ansible Playbook (второй запуск, показывающий идемпотентность): 
+
+
+<img width="1482" height="807" alt="image" src="https://github.com/user-attachments/assets/5d2d2d45-059b-4941-b9a3-e968a3e898c4" />
 
 ## 2. Локальное окружение (Terraform + Docker)
 
@@ -40,6 +44,14 @@ docker compose up -d
 curl http://localhost
 ```
 
+
+Результат docker-compose ps и curl http://<IP>:
+
+
+<img width="1206" height="334" alt="image" src="https://github.com/user-attachments/assets/04967bfe-db61-4625-9a40-c2b20ec56a87" />
+
+<img width="734" height="287" alt="image" src="https://github.com/user-attachments/assets/161b80b6-563d-4f43-ad81-d345744c393a" />
+
 ## 4. Мониторинг (Bash Script)
 
 ```bash
@@ -52,3 +64,9 @@ chmod +x ~/monitor.sh
 
 ./monitor.sh docker
 ```
+
+
+Результат работы скрипта monitor.sh: 
+
+
+<img width="1920" height="602" alt="image" src="https://github.com/user-attachments/assets/8ba45ee2-6ee4-4a37-a2ef-60cc79727c7f" />
