@@ -11,33 +11,31 @@ terraform {
   }
 }
 
-provider "docker" {}
+provider "docker" {
+  host     = var.docker_host
+  ssh_opts = ["-i", pathexpand(var.ssh_key_path), "-o", "StrictHostKeyChecking=accept-new"]
+}
 
 resource "local_file" "nginx_index" {
-  content  = "200 OK\nHello from Terraform-managed Nginx!\n"
+  content  = "Hello from Terraform-managed Nginx on Remote VM!\n"
   filename = "${path.module}/index.html"
 }
 
-resource "docker_network" "custom_net" {
-  name = "terraform_nginx_network"
+resource "docker_network" "web" {
+  name = "tf-web-net"
 }
 
 resource "docker_image" "nginx" {
-  name         = "nginx:alpine"
+  name         = "nginx:1.27-alpine"
   keep_locally = false
 }
 
 resource "docker_container" "nginx" {
-  name  = "terraform_nginx_app"
+  name  = "tf-nginx"
   image = docker_image.nginx.image_id
 
-  ports {
-    internal = 80
-    external = 8081
-  }
-
   networks_advanced {
-    name = docker_network.custom_net.name
+    name = docker_network.web.name
   }
 
   mounts {
@@ -47,15 +45,8 @@ resource "docker_container" "nginx" {
     read_only = true
   }
 
-  restart = "always"
-}
-
-output "curl_command" {
-  description = "Команда для проверки работы Nginx"
-  value       = "curl -i http://localhost:8081"
-}
-
-output "network_name" {
-  description = "Имя созданной сети"
-  value       = docker_network.custom_net.name
+  ports {
+    internal = 80
+    external = var.external_port
+  }
 }
